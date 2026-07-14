@@ -39,6 +39,8 @@ This blueprint is intended for rooms where opening a window should temporarily r
 
 ## Installation
 
+[![Open your Home Assistant instance and import this blueprint](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https://github.com/wgumaa/Window-thermostat-blueprint/blob/main/blueprints/automation/Waleed%20Gumaa/window_thermostat_setback_and_restore.yaml)
+
 ### Import from GitHub
 
 Copy this blueprint URL:
