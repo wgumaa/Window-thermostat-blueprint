@@ -6,7 +6,7 @@ When any selected window opens, the thermostat is set to a configurable minimum 
 
 ## Overview
 
-This blueprint is designed for rooms where opening a window should temporarily reduce heating demand while still allowing different normal target temperatures for each season.
+This blueprint is designed for rooms where opening a window should temporarily reduce heating demand while still allowing different normal temperatures for each season.
 
 ### Features
 
@@ -16,7 +16,7 @@ This blueprint is designed for rooms where opening a window should temporarily r
 - Uses different normal temperatures for spring, summer, autumn, and winter
 - Uses Home Assistant's built-in `sensor.season`
 - Supports open and close delays
-- Re-applies the correct temperature if the season changes while Home Assistant is running
+- Re-applies the correct temperature if the season changes
 
 ## How it works
 
@@ -40,35 +40,30 @@ This blueprint is designed for rooms where opening a window should temporarily r
 
 ## Installation
 
-### Import into Home Assistant
+[![Open your Home Assistant instance and import this blueprint](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https://github.com/wgumaa/Window-thermostat-blueprint/blob/main/window_thermostat_setback_and_restore.yaml)
 
-[![Open your Home Assistant instance and import this blueprint](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https://github.com/wgumaa/Window-thermostat-blueprint/blob/main/blueprints/automation/Waleed%20Gumaa/window_thermostat_setback_and_restore.yaml)
+### Import from a URL
 
-### Import from URL
-
-Copy this blueprint URL:
+1. Copy this blueprint URL:
 
 ```text
-https://github.com/wgumaa/Window-thermostat-blueprint/blob/main/blueprints/automation/Waleed%20Gumaa/window_thermostat_setback_and_restore.yaml
+https://github.com/wgumaa/Window-thermostat-blueprint/blob/main/window_thermostat_setback_and_restore.yaml
 ```
 
-Then in Home Assistant:
-
-1. Go to **Settings** -> **Automations & scenes** -> **Blueprints**.
-2. Click **Import Blueprint**.
-3. Paste the URL above.
-4. Click **Preview**.
-5. Import the blueprint.
-6. Create a new automation from it.
+2. In Home Assistant, go to **Settings** -> **Automations & scenes** -> **Blueprints**.
+3. Click **Import Blueprint**.
+4. Paste the URL above.
+5. Click **Preview** and import it.
+6. Create a new automation from the blueprint.
 
 ### Manual installation
 
-You can also install the blueprint manually by placing the YAML file in your Home Assistant blueprint folder.
+You can also install the blueprint manually by placing the YAML file in your Home Assistant blueprint folder. Home Assistant blueprints are commonly stored under `/config/blueprints/automation/<your_folder>/your_blueprint.yaml`. [web:146][web:149]
 
-Save the file here:
+Save the file here, for example:
 
 ```text
-/config/blueprints/automation/Waleed Gumaa/window_thermostat_setback_and_restore.yaml
+/config/blueprints/automation/wgumaa/window_thermostat_setback_and_restore.yaml
 ```
 
 Then reload automations or restart Home Assistant if needed.
@@ -90,17 +85,14 @@ Example values:
 ```text
 .
 ├── README.md
-└── blueprints/
-    └── automation/
-        └── Waleed Gumaa/
-            └── window_thermostat_setback_and_restore.yaml
+└── window_thermostat_setback_and_restore.yaml
 ```
 
 ## Notes
 
 - This blueprint uses `sensor.season` directly, so no season selector is required.
 - It is intended for thermostats that support `climate.set_temperature`.
-- If you rename the folder or file later, update the import link in this README.
+- If you move or rename the YAML file later, update the import link in this README.
 
 ## License
 
