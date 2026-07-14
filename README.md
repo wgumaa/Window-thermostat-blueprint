@@ -16,16 +16,14 @@ When all selected windows are closed again, the thermostat is restored to the co
 
 ## Import into Home Assistant
 
-> Replace `YOUR_USERNAME` if needed, and confirm the final repository and file path before publishing.
-
 ### My Home Assistant import button
 
-[![Open your Home Assistant instance and import this blueprint](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https://raw.githubusercontent.com/wgumaa/home-assistant-window-thermostat-blueprint/main/blueprints/automation/wgumaa/window_thermostat_setback_and_restore.yaml)
+[![Open your Home Assistant instance and import this blueprint](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https://raw.githubusercontent.com/wgumaa/Window-thermostat-blueprint/main/blueprints/automation/wgumaa/window_thermostat_setback_and_restore.yaml)
 
 ### Manual import URL
 
 ```text
-https://raw.githubusercontent.com/wgumaa/home-assistant-window-thermostat-blueprint/main/blueprints/automation/wgumaa/window_thermostat_setback_and_restore.yaml
+https://raw.githubusercontent.com/wgumaa/Window-thermostat-blueprint/main/blueprints/automation/wgumaa/window_thermostat_setback_and_restore.yaml
 ```
 
 In Home Assistant:
@@ -36,8 +34,6 @@ In Home Assistant:
 4. Click **Preview** and then **Import**.
 
 ## Blueprint location
-
-Store the blueprint file in this repository at:
 
 ```text
 blueprints/automation/wgumaa/window_thermostat_setback_and_restore.yaml
