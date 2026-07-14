@@ -1,0 +1,265 @@
+blueprint:
+  name: Seasonal window thermostat control (multi-window)
+  description: >
+    Set a thermostat to a lower temperature when any selected window opens,
+    then restore the normal target temperature for the current season when all
+    selected windows are closed again.
+
+    Uses Home Assistant's default sensor.season entity.
+  domain: automation
+  author: Waleed Gumaa
+  homeassistant:
+    min_version: 2022.4.0
+
+  input:
+    window_sensors:
+      name: Window sensors
+      description: One or more window or door contact sensors for the room
+      selector:
+        entity:
+          domain: binary_sensor
+          multiple: true
+
+    thermostat:
+      name: Thermostat
+      description: Climate entity to control
+      selector:
+        entity:
+          domain: climate
+
+    window_open_temperature:
+      name: Window-open minimum temperature
+      description: Temperature to set while any selected window is open
+      default: 15
+      selector:
+        number:
+          min: 5
+          max: 35
+          step: 0.5
+          unit_of_measurement: °C
+          mode: slider
+
+    spring_normal_temp:
+      name: Spring normal temperature
+      default: 20
+      selector:
+        number:
+          min: 5
+          max: 35
+          step: 0.5
+          unit_of_measurement: °C
+          mode: slider
+
+    summer_normal_temp:
+      name: Summer normal temperature
+      default: 18
+      selector:
+        number:
+          min: 5
+          max: 35
+          step: 0.5
+          unit_of_measurement: °C
+          mode: slider
+
+    autumn_normal_temp:
+      name: Autumn normal temperature
+      default: 21
+      selector:
+        number:
+          min: 5
+          max: 35
+          step: 0.5
+          unit_of_measurement: °C
+          mode: slider
+
+    winter_normal_temp:
+      name: Winter normal temperature
+      default: 22
+      selector:
+        number:
+          min: 5
+          max: 35
+          step: 0.5
+          unit_of_measurement: °C
+          mode: slider
+
+    open_delay:
+      name: Open delay
+      description: How long a window must stay open before the setback is applied
+      default: "00:00:30"
+      selector:
+        duration:
+
+    close_delay:
+      name: Close delay
+      description: How long all windows must stay closed before the normal temperature is restored
+      default: "00:00:30"
+      selector:
+        duration:
+
+mode: restart
+max_exceeded: silent
+
+variables:
+  window_sensors: !input window_sensors
+  thermostat: !input thermostat
+  current_season: "{{ states('sensor.season') }}"
+
+  any_window_open: >-
+    {{ expand(window_sensors)
+       | selectattr('state', 'eq', 'on')
+       | list
+       | count > 0 }}
+
+  all_windows_closed: >-
+    {{ expand(window_sensors)
+       | selectattr('state', 'eq', 'on')
+       | list
+       | count == 0 }}
+
+trigger:
+  - platform: state
+    entity_id: !input window_sensors
+    to: "on"
+    for: !input open_delay
+    id: windows_open
+
+  - platform: state
+    entity_id: !input window_sensors
+    to: "off"
+    id: windows_close_change
+
+  - platform: state
+    entity_id: sensor.season
+    id: season_changed
+
+condition: []
+
+action:
+  - choose:
+      - alias: Apply window-open temperature
+        conditions:
+          - condition: trigger
+            id: windows_open
+          - condition: template
+            value_template: "{{ any_window_open }}"
+        sequence:
+          - service: climate.set_temperature
+            target:
+              entity_id: !input thermostat
+            data:
+              temperature: !input window_open_temperature
+
+      - alias: Restore seasonal normal temperature when all windows are closed
+        conditions:
+          - condition: trigger
+            id: windows_close_change
+          - condition: template
+            value_template: "{{ all_windows_closed }}"
+        sequence:
+          - delay: !input close_delay
+
+          - condition: template
+            value_template: >-
+              {{ expand(window_sensors)
+                 | selectattr('state', 'eq', 'on')
+                 | list
+                 | count == 0 }}
+
+          - choose:
+              - conditions:
+                  - condition: template
+                    value_template: "{{ current_season == 'spring' }}"
+                sequence:
+                  - service: climate.set_temperature
+                    target:
+                      entity_id: !input thermostat
+                    data:
+                      temperature: !input spring_normal_temp
+
+              - conditions:
+                  - condition: template
+                    value_template: "{{ current_season == 'summer' }}"
+                sequence:
+                  - service: climate.set_temperature
+                    target:
+                      entity_id: !input thermostat
+                    data:
+                      temperature: !input summer_normal_temp
+
+              - conditions:
+                  - condition: template
+                    value_template: "{{ current_season == 'autumn' }}"
+                sequence:
+                  - service: climate.set_temperature
+                    target:
+                      entity_id: !input thermostat
+                    data:
+                      temperature: !input autumn_normal_temp
+
+              - conditions:
+                  - condition: template
+                    value_template: "{{ current_season == 'winter' }}"
+                sequence:
+                  - service: climate.set_temperature
+                    target:
+                      entity_id: !input thermostat
+                    data:
+                      temperature: !input winter_normal_temp
+
+      - alias: Re-apply correct temperature when season changes
+        conditions:
+          - condition: trigger
+            id: season_changed
+        sequence:
+          - choose:
+              - conditions:
+                  - condition: template
+                    value_template: "{{ any_window_open }}"
+                sequence:
+                  - service: climate.set_temperature
+                    target:
+                      entity_id: !input thermostat
+                    data:
+                      temperature: !input window_open_temperature
+            default:
+              - choose:
+                  - conditions:
+                      - condition: template
+                        value_template: "{{ current_season == 'spring' }}"
+                    sequence:
+                      - service: climate.set_temperature
+                        target:
+                          entity_id: !input thermostat
+                        data:
+                          temperature: !input spring_normal_temp
+
+                  - conditions:
+                      - condition: template
+                        value_template: "{{ current_season == 'summer' }}"
+                    sequence:
+                      - service: climate.set_temperature
+                        target:
+                          entity_id: !input thermostat
+                        data:
+                          temperature: !input summer_normal_temp
+
+                  - conditions:
+                      - condition: template
+                        value_template: "{{ current_season == 'autumn' }}"
+                    sequence:
+                      - service: climate.set_temperature
+                        target:
+                          entity_id: !input thermostat
+                        data:
+                          temperature: !input autumn_normal_temp
+
+                  - conditions:
+                      - condition: template
+                        value_template: "{{ current_season == 'winter' }}"
+                    sequence:
+                      - service: climate.set_temperature
+                        target:
+                          entity_id: !input thermostat
+                        data:
+                          temperature: !input winter_normal_temp
